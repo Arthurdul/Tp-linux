@@ -160,3 +160,98 @@ Pour se connecter au serveur SSH :
     journalctl | grep vsftpd
     nov. 08 14:55:56 node1.tp1.linux sudo[2567]:   arthur : TTY=pts/0 ; PWD=/home/arthur ; USER=root ; COMMAND=/usr/bin/apt install vsftpd
     arthur@node1:~$ sudo cat /var/log/vsftpd.log
+
+**➜ Upload et Download :** 
+
+    arthur@node1:~$ sudo nano /etc/vsftpd.conf
+    write_enable=YES
+
+On a les permitions d'écrire via filezilla.
+
+    arthur@node1:~$ sudo cat /var/log/vsftpd.log
+    Mon Nov  8 16:05:37 2021 [pid 2231] [arthur] OK UPLOAD: Client "::ffff:192.168.56.1", "/home/arthur/test tp2.txt", 0.00Kbyte/sec
+
+Le fichier text à donc bien été upload et download.
+
+**➜ Modification de la configuration serveur :**
+
+    arthur@node1:~$ sudo nano /etc/vsftpd.conf
+    listen_port=33450
+    arthur@node1:~$ sudo systemctl restart vsftpd
+
+J'essaye de me connecter au FTP avec le nouveau port.
+
+    arthur@node1:~$ ftp 192.168.56.116 33450
+    Connected to 192.168.56.116.
+    220 (vsFTPd 3.0.3)
+    Name (192.168.56.116:arthur): arthur
+    331 Please specify the password.
+    Password:
+    230 Login successful.
+
+**Création de votre propre service :**
+
+**➜ Jouer avec NetCat**
+
+Sur mon pc :
+
+    arthur@node1:~$ sudo apt install netcat
+    arthur@node1:~$ nc -l 7654
+
+Sur la VM :
+
+    arthur@arthur:~$ sudo apt install netcat
+    arthur@arthur:~$ nc 192.168.56.116 7654
+
+Les deux peuvent maintenant discuter ensemble :
+
+    arthur@node1:~$ nc -l 7564
+    Hello
+
+**➜ Un service basé sur NetCat :**
+
+    arthur@node1:~$ sudo nano /etc/systemd/system/chat_tp2.service
+        [Unit]
+        Description=Little chat service (TP2)
+
+        [Service]
+        ExecStart=nc -l 7564
+
+        [Install]
+        WantedBy=multi-user.target
+    chmod 777 /etc/systemd/system/chat_tp2.service
+
+**Test test et retest :**
+
+    arthur@node1:~$ systemctl start chat_tp2.service
+    arthur@node1:~$ systemctl status chat_tp2
+    ● chat_tp2.service - Little chat service (TP2)
+        Loaded: loaded (/etc/systemd/system/chat_tp2.service; disabled; vendor preset: enabled)
+        Active: active (running) since Mon 2021-11-08 17:09:06 CET; 6s ago
+   Main PID: 2721 (nc)
+      Tasks: 1 (limit: 1105)
+     Memory: 188.0K
+     CGroup: /system.slice/chat_tp2.service
+             └─2721 /usr/bin/nc -l 7564
+
+    arthur@node1:~$ journalctl -xe -u chat_tp2
+    -- Logs begin at Sat 2021-10-23 14:39:58 CEST, end at Mon 2021-11-08 17:09:26 CET. --
+    nov. 08 17:09:06 node1.tp2.linux systemd[1]: Started Little chat service (TP2).
+    -- Subject: A start job for unit chat_tp2.service has finished successfully
+
+    arthur@node1:~$ journalctl -xe -u chat_tp2 -f
+    -- Logs begin at Sat 2021-10-23 14:39:58 CEST. --
+    nov. 08 17:09:06 node1.tp2.linux systemd[1]: Started Little chat service (TP2).
+    -- Subject: A start job for unit chat_tp2.service has finished successfully
+    -- Defined-By: systemd
+    -- Support: http://www.ubuntu.com/support
+    --
+    -- A start job for unit chat_tp2.service has finished successfully.
+    --
+    -- The job identifier is 3955.
+    nov. 08 17:15:25 node1.tp2.linux systemd[1]: chat_tp2.service: Succeeded.
+    -- Subject: Unit succeeded
+    -- Defined-By: systemd
+    -- Support: http://www.ubuntu.com/support
+    --
+    -- The unit chat_tp2.service has successfully entered the 'dead' sta
