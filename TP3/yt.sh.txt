@@ -1,0 +1,54 @@
+#!/bin/bash
+usage() {
+        echo "Usage: yt.sh [options] <url>"
+        echo " -q <quality> "
+        echo " -o <directory> path file"
+        echo " -h to show this menu "
+        exit
+}
+if [[ -d "/srv/yt/downloads" && -d "/var/log/yt/" ]]; then
+        path="/srv/yt/downloads"
+        form="mp4"
+        for i in "$@"; do
+                if [[ "$i" == "-q" ]]; then
+                        path=true
+                elif [[ "$i" == "-o" ]]; then
+                        form=true
+                elif [[ "$i" == "-h" ]]; then
+                        echo "Usage : yt.sh [options] url"
+                        echo " Options : -q <quality>   -o <directory> File path"
+                        exit
+                elif [[ $form == true ]]; then
+                        form="$i"
+                elif [[ $path == true ]]; then
+                        path="$i"
+                fi
+                link="$i"
+        done
+        if [[ "$link" =~ https://www.youtube.com/ ]]; then
+                if youtube-dl -e "$link" &> /dev/null; then
+                        titre=$(youtube-dl -e "$link")
+                        mkdir "$path/$titre" &> /dev/null
+                        if (cd "$path/$titre" && youtube-dl -f "$form/mp4" "$link" &>/dev/null); then
+                                youtube-dl --get-description "$link" > "$path/$titre/desc"
+                                echo "Video $link was downloaded in $form form."
+                                echo "File path : $path/$titre/$titre.mp4"
+                                echo "[$(date "+%D %T")]"" Video $link was downloaded. File path : ""$path/$titre/$titre.mp4""'" >> "/var/log/yt/download.log"
+                        else
+                                echo "Video download failed"
+                echo "[$(date "+%D %T")]"" Video $link failed to download.""'" >> "/var/log/yt/download.log"
+                                usage
+                        fi
+                else
+            echo "[$(date "+%D %T")]"" Link $link is not working.""'" >> "/var/log/yt/download.log"
+                        echo "Link not working"
+                        usage
+                fi
+        else
+        echo "[$(date "+%D %T")]"" Wrong URL : $link""'" >> "/var/log/yt/download.log"
+                echo "wrong URL"
+                usage
+        fi
+else
+        echo "Missing file"
+fi
