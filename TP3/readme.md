@@ -2,7 +2,7 @@
 
 # I. Script carte d'identité
 
-Script idcard ->
+Script idcard -> https://github.com/Arthurdul/Tp-linux/blob/main/TP3/idcard.sh.txt
 ```
 Machine name : arthur-VM
 OS : NAME="Ubuntu"
@@ -29,6 +29,8 @@ Here's your random cat https://cdn2.thecatapi.com/images/MTgxNTQwNQ.jpg
   ```
   
 # II. Script youtube-dl
+
+Script yt.sh -> https://github.com/Arthurdul/Tp-linux/blob/main/TP3/yt.sh.txt
 
 Si tous les dossiers sont présents :
 
@@ -69,7 +71,9 @@ arthur@arthur-VM:~$ cat /var/log/yt/download.log
 
 # III. MAKE IT A SERVICE
 
-Le service :²
+Script yt-v2.sh -> https://github.com/Arthurdul/Tp-linux/blob/main/TP3/yt-v2.sh.txt
+
+Le service :
 
 ```
 arthur@arthur-VM:~$ cat /etc/systemd/system/yt.service
@@ -102,10 +106,10 @@ nov. 27 14:11:56 arthur-VM systemd[1]: Started "Processus pour download des vid�
 Je met des bon liens et des mauvais lien puis je vais dans mes log : 
 
 ```
-arthur@arthur-VM:~/srv/yt$ echo "https://www.youtube.com/watch?v=JwFnC1hFwV4" >> url.txt
-arthur@arthur-VM:~/srv/yt$ echo "https://www.youtube.com/watch?v=Qu_sVAByvBk" >> url.txt 
-arthur@arthur-VM:~/srv/yt$ echo "https://www.youtube.com/watch?v=zozoebfqkzbds" >> url.txt
-arthur@arthur-VM:~/srv/yt$ cat url.txt 
+arthur@arthur-VM:~/srv/yt$ echo "https://www.youtube.com/watch?v=JwFnC1hFwV4" >> url
+arthur@arthur-VM:~/srv/yt$ echo "https://www.youtube.com/watch?v=Qu_sVAByvBk" >> url 
+arthur@arthur-VM:~/srv/yt$ echo "https://www.youtube.com/watch?v=zozoebfqkzbds" >> url
+arthur@arthur-VM:~/srv/yt$ cat url
 https://www.youtube.com/watch?v=JwFnC1hFwV4
 https://www.youtube.com/watch?v=Qu_sVAByvBk
 https://www.youtube.com/watch?v=zozoebfqkzbds
