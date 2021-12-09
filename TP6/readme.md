@@ -204,9 +204,7 @@ mount.nfs: trying text-based options 'vers=4.2,addr=10.5.1.13,clientaddr=10.5.1.
 ```
 # Partie 4 : Scripts de sauvegarde
 ## I. Sauvegarde Web
-📁 **Script [`/srv/backup.sh`]**
-📁 **Service [`/etc/systemd/system/backup.service`]**
-📁 **Timer [`/etc/systemd/system/backup.timer`]**
+
 ---
 **Ecrire un script qui sauvegarde les données de NextCloud**
 ```bash
@@ -239,9 +237,7 @@ apps      config   COPYING      cron.php  index.html  lib        ocm-provider  o
 [21/12/07 22:12:20] Backup /srv/backup/nextcloud_211207_211249.tar.gz created successfully.
 ```
 ## II. Sauvegarde base de données
-📁 **Script [`/srv/backup_db.sh`]**
-📁 **Service [`/etc/systemd/system/backup.service`]**
-📁 **Timer [`/etc/systemd/system/backup_db.timer`]**
+
 ---
 **Ecrire un script qui sauvegarde les données de la base de données MariaDB**
 ```bash
